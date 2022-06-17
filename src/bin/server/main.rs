@@ -53,8 +53,9 @@ async fn handle_read(mut read: OwnedReadHalf, mut sender: Sender<Message>) {
 async fn handle_write(mut write: OwnedWriteHalf, mut recv: Receiver<Message>) {
     loop {
         let msg = recv.recv().await.unwrap();
-        let bytes = msg.content.as_bytes();
         let ip = msg.ip;
+        let str = String::from(format!("{}---> {}", ip, msg.content));
+        let bytes = str.as_bytes();
         if ip != write.peer_addr().unwrap() {
             write
                 .write_all(&mut bytes.len().to_be_bytes())

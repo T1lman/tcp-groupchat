@@ -22,6 +22,7 @@ async fn handle_read(mut read: OwnedReadHalf) {
         let size = u64::from_be_bytes(buf1) as usize;
         let mut msgbuf = vec![0u8; size];
         read.read_exact(&mut msgbuf).await.unwrap();
+
         println!("{}", String::from_utf8(msgbuf).unwrap())
     }
 }
