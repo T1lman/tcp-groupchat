@@ -1,3 +1,4 @@
+use chrono::{Datelike, Local, Timelike};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net;
 use tokio::net::tcp::{OwnedReadHalf, OwnedWriteHalf};
@@ -54,7 +55,17 @@ async fn handle_write(mut write: OwnedWriteHalf, mut recv: Receiver<Message>) {
     loop {
         let msg = recv.recv().await.unwrap();
         let ip = msg.ip;
-        let str = String::from(format!("{}---> {}", ip, msg.content));
+        let time = Local::now();
+        let timestr = format!(
+            "{}.{}.{} {}:{}:{}",
+            time.day(),
+            time.month(),
+            time.year(),
+            time.hour(),
+            time.minute(),
+            time.second(),
+        );
+        let str = String::from(format!("{} at {}---> {}", ip, timestr, msg.content));
         let bytes = str.as_bytes();
         if ip != write.peer_addr().unwrap() {
             write
